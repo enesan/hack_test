@@ -1,12 +1,14 @@
 using Application.Interfaces;
 using Domain.Entities;
 using HackTest.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Persistence;
 
-public class ApplicationDbContext : DbContext, IApplicationDbContext
+public class ApplicationDbContext : IdentityDbContext<IdentityUser>, IApplicationDbContext
 {
     public DbSet<Answer> Answers { get; set; } = null!;
     public DbSet<Group> Groups { get; set; } = null!;

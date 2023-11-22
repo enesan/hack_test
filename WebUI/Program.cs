@@ -4,8 +4,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Ancient.Models;
+using Application.Helpers;
+using Application.Settings;
 using Infrastructure;
 using Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,16 +18,36 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
 //
 // builder.Services.AddIdentityServer()
 //     .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
-builder.Services.AddAuthentication()
-    .AddIdentityServerJwt();
+builder.Services.AddAuthentication(x =>
+        {
+            x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        }
+    )
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidIssuer = AuthService.Settings.Issuer,
+            ValidateAudience = true,
+            ValidAudience = AuthService.Settings.Audience,
+            ValidateLifetime = true,
+            IssuerSigningKey = AuthService.GetSecurityKey(),
+            ValidateIssuerSigningKey = true
+        };
+    });
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
