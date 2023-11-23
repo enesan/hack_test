@@ -1,8 +1,7 @@
 namespace Domain.Entities;
 
-public class Test
+public class Test: BaseEntity
 {
-    public int Id { get; set; }
     
     
     public int QuestionsBaseId { get; set; }

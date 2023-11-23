@@ -1,3 +1,4 @@
+using Application.Dtos;
 using HackTest.Entities;
 
 namespace Application.Interfaces;

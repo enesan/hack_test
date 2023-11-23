@@ -2,10 +2,11 @@
 using Application.Interfaces;
 using Domain.Entities;
 using HackTest.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services;
 
-public class AnswerService
+public class AnswerService : IAnswerService
 {
     private readonly IApplicationDbContext _context;
 
@@ -15,78 +16,91 @@ public class AnswerService
     }
 
     // Create
-    public void AddAnswer(AnswerDto answerDTO)
+
+    public async Task<AnswerDto> CreateAsync(AnswerDto dto)
     {
         var answer = new Answer
         {
-          
+            Text = dto.Text,
+            IsRight = dto.IsRight,
+            QuestionId = dto.QuestionId
         };
 
-        _context.Answers.Add(answer);
-        _context.SaveChanges();
+        await _context.Answers.AddAsync(answer);
+        await _context.SaveChangesAsync();
+        
+        return new AnswerDto
+        {
+            Id = answer.Id,
+            Text = answer.Text,
+            IsRight = answer.IsRight,
+            QuestionId = answer.QuestionId
+        };
+    }
+
+    public async Task<AnswerDto> GetByIdAsync(int id)
+    {
+        var answer = await _context.Answers.FindAsync(id);
+
+        if (answer == null)
+            throw new NullReferenceException("Сущность не найдена");
+
+        return new AnswerDto
+        {
+            Id = answer.Id,
+            Text = answer.Text,
+            IsRight = answer.IsRight,
+            QuestionId = answer.QuestionId
+        };
     }
 
     // Read
-    public List<AnswerDto> GetAllAnswers()
+    public async Task<ICollection<AnswerDto>> GetAllAsync()
     {
-        return _context.Answers
+        return await _context.Answers
             .Select(answer => new AnswerDto
             {
                 Id = answer.Id,
-                Content = answer.Content,
-                // Map other properties if needed
+                Text = answer.Text,
+                IsRight = answer.IsRight,
+                QuestionId = answer.QuestionId
             })
-            .ToList();
-    }
-
-    public AnswerDTO GetAnswerById(int id)
-    {
-        var answer = _context.Answers.Find(id);
-
-        if (answer == null)
-        {
-            // Handle not found
-            return null;
-        }
-
-        return new AnswerDTO
-        {
-            Id = answer.Id,
-            Content = answer.Content,
-            // Map other properties if needed
-        };
+            .ToListAsync();
     }
 
     // Update
-    public void UpdateAnswer(int id, AnswerDTO updatedAnswerDTO)
+    public async Task<AnswerDto> UpdateAsync(AnswerDto dto)
     {
-        var answer = _context.Answers.Find(id);
+        var answer = await _context.Answers.FindAsync(dto.Id);
 
         if (answer == null)
+            throw new NullReferenceException("Сущность не найдена");
+
+        answer.Text = dto.Text;
+        answer.IsRight = dto.IsRight;
+        answer.QuestionId = dto.QuestionId;
+
+        _context.Answers.Update(answer);
+        await _context.SaveChangesAsync();
+        
+        return new AnswerDto
         {
-            // Handle not found
-            return;
-        }
-
-        answer.Content = updatedAnswerDTO.Content;
-        // Update other properties if needed
-
-        _context.SaveChanges();
+            Id = answer.Id,
+            Text = answer.Text,
+            IsRight = answer.IsRight,
+            QuestionId = answer.QuestionId
+        };
     }
 
     // Delete
-    public void DeleteAnswer(int id)
+    public async Task DeleteAsync(int id)
     {
-        var answer = _context.Answers.Find(id);
+        var answer = await _context.Answers.FindAsync(id);
 
         if (answer == null)
-        {
-            // Handle not found
-            return;
-        }
+            throw new NullReferenceException("Сущность не найдена");
 
         _context.Answers.Remove(answer);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
-
 }

@@ -15,4 +15,6 @@ public interface IApplicationDbContext
     public DbSet<Subject> Subjects { get; set; }
     public DbSet<Test> Tests { get; set; }
     public DbSet<University> Universities { get; set; }
+
+     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

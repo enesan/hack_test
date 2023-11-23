@@ -2,9 +2,8 @@ using Domain.Entities;
 
 namespace Domain.Entities;
 
-public class Question
+public class Question: BaseEntity
 {
-    public int Id { get; set; }
     public string Text { get; set; }
     public string CommentRight { get; set; }
     public string CommentWrong { get; set; }

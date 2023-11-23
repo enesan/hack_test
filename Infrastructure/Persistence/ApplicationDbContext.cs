@@ -29,4 +29,8 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>, IApplicatio
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
     }
+
+
+    
+    
 }

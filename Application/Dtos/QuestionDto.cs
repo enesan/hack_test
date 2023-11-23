@@ -1,6 +1,8 @@
-namespace HackTest.Entities;
+using HackTest.Entities;
 
-public class QuestionDto
+namespace Application.Dtos;
+
+public class QuestionDto: BaseDto
 {
     public int Id { get; set; }
     public string Text { get; set; }

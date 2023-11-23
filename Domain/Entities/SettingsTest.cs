@@ -1,6 +1,5 @@
 namespace Domain.Entities;
 
-public class SettingsTest
+public class SettingsTest: BaseEntity
 {
-    public int Id { get; set; }
 }

@@ -1,8 +1,7 @@
 namespace Domain.Entities;
 
-public class Group
+public class Group: BaseEntity
 {
-    public int Id { get; set; }
     public int Number { get; set; }
     
     public List<Student>? Students { get; set; }

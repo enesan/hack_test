@@ -1,8 +1,7 @@
 namespace Domain.Entities;
 
-public class QuestionsGroup
+public class QuestionsGroup: BaseEntity
 {
-    public int Id { get; set; }
     public string Topic { get; set; }
     
     public int QuestionsId { get; set; }

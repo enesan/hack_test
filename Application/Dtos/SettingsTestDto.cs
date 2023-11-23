@@ -1,6 +1,6 @@
-namespace HackTest.Entities;
+namespace Application.Dtos;
 
-public class SettingsTestDto
+public class SettingsTestDto: BaseDto
 {
     public int Id { get; set; }
 }

@@ -1,6 +1,6 @@
-namespace HackTest.Entities;
+namespace Application.Dtos;
 
-public class StudentDto
+public class StudentDto: BaseDto
 {
     public int Id { get; set; }
     public string FirstName { get; set; }
