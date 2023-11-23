@@ -22,6 +22,7 @@ public class QuestionService : IQuestionService
             Text = model.Text,
             CommentRight = model.CommentRight,
             CommentWrong = model.CommentWrong,
+            Score = model.Score
         };
 
         await _context.Questions.AddAsync(question);
@@ -32,7 +33,8 @@ public class QuestionService : IQuestionService
            Id = question.Id,
            Text = question.Text,
            CommentRight = question.CommentRight,
-           CommentWrong = question.CommentWrong
+           CommentWrong = question.CommentWrong,
+           Score = question.Score
        };
 
     }
@@ -48,7 +50,8 @@ public class QuestionService : IQuestionService
             Id = question.Id,
             Text = question.Text,
             CommentRight = question.CommentRight,
-            CommentWrong = question.CommentWrong
+            CommentWrong = question.CommentWrong,
+            Score = question.Score
         };
     }
     
@@ -61,7 +64,8 @@ public class QuestionService : IQuestionService
                 Id = question.Id,
                 Text = question.Text,
                 CommentRight = question.CommentRight,
-                CommentWrong = question.CommentWrong
+                CommentWrong = question.CommentWrong,
+                Score = question.Score
             })
             .ToListAsync();
     }
@@ -86,7 +90,8 @@ public class QuestionService : IQuestionService
             Id = question.Id,
             Text = question.Text,
             CommentRight = question.CommentRight,
-            CommentWrong = question.CommentWrong
+            CommentWrong = question.CommentWrong,
+            Score = question.Score
         };
     }
     
