@@ -2,6 +2,7 @@ using Application.Dtos;
 using Application.Interfaces;
 using Domain.Entities;
 using HackTest.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services;
 
@@ -14,29 +15,103 @@ public class StudentService : IStudentService
         _context = context;
     }
     
+    // Create
     public async Task<StudentDto> CreateAsync(StudentDto model)
     {
-        var student = new Student()
+        var student = new Student
         {
             FirstName = model.FirstName,
             MiddleName = model.MiddleName,
             LastName = model.LastName,
             GroupId = model.GroupId,
-            UniversityId = model.UniversityId,
+            UniversityId = model.UniversityId
         };
 
         await _context.Students.AddAsync(student);
-       // await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
-       return new StudentDto()
+       return new StudentDto
        {
            Id = student.Id,
            FirstName = student.FirstName,
            MiddleName = student.MiddleName,
            LastName = student.LastName,
            GroupId = student.GroupId,
-           UniversityId = student.UniversityId,
+           UniversityId = student.UniversityId
        };
 
+    }
+    public async Task<StudentDto> GetByIdAsync(int id)
+    {
+        var student = await _context.Students.FindAsync(id);
+
+        if (student == null)
+            throw new NullReferenceException("Сущность не найдена");
+
+        return new StudentDto
+        {
+            Id = student.Id,
+            FirstName = student.FirstName,
+            MiddleName = student.MiddleName,
+            LastName = student.LastName,
+            GroupId = student.GroupId,
+            UniversityId = student.UniversityId
+        };
+    }
+    
+    // Read
+    public async Task<ICollection<StudentDto>> GetAllAsync()
+    {
+        return await _context.Students
+            .Select(student => new StudentDto
+            {
+                Id = student.Id,
+                FirstName = student.FirstName,
+                MiddleName = student.MiddleName,
+                LastName = student.LastName,
+                GroupId = student.GroupId,
+                UniversityId = student.UniversityId
+            })
+            .ToListAsync();
+    }
+    
+    // Update
+    public async Task<StudentDto> UpdateAsync(StudentDto dto)
+    {
+        var student = await _context.Students.FindAsync(dto.Id);
+
+        if (student == null)
+            throw new NullReferenceException("Сущность не найдена");
+
+        student.FirstName = dto.FirstName;
+        student.MiddleName = dto.MiddleName;
+        student.LastName = dto.LastName;
+        student.GroupId = dto.GroupId;
+        student.UniversityId = dto.UniversityId;
+        
+        _context.Students.Update(student);
+        await _context.SaveChangesAsync();
+        
+        return new StudentDto
+        {
+            Id = student.Id,
+            FirstName = student.FirstName,
+            MiddleName = student.MiddleName,
+            LastName = student.LastName,
+            GroupId = student.GroupId,
+            UniversityId = student.UniversityId
+        };
+    }
+    
+    // Delete
+    public async Task DeleteAsync(int id)
+    {
+        var student = await _context.Students.FindAsync(id);
+
+        if (student == null)
+            throw new NullReferenceException("Сущность не найдена");
+
+        _context.Students.Remove(student);
+        await _context.SaveChangesAsync();
     }
 }
