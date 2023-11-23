@@ -3,7 +3,7 @@ using HackTest.Entities;
 
 namespace Application.Interfaces;
 
-public interface IStudentService
+public interface IStudentService : IService<StudentDto>
 {
-    Task<StudentDto> CreateAsync(StudentDto model);
+    
 }
