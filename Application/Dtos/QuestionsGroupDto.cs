@@ -6,4 +6,5 @@ public class QuestionsGroupDto: BaseDto
     public string Topic { get; set; }
     public int QuestionsId { get; set; }
     public int QuestionsBaseId { get; set; }
+    public QuestionsBaseDto QuestionsBase { get; set; }
 }
