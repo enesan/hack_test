@@ -8,5 +8,6 @@ public class AnswerDto : BaseDto
     public string Text { get; set; }
     public bool IsRight { get; set; }
     public int QuestionId { get; set; }
+    public QuestionDto Question { get; set; }
  
 }
