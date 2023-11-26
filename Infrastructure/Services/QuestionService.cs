@@ -43,17 +43,7 @@ public class QuestionService : IQuestionService
         await _context.Questions.AddAsync(question);
         await _context.SaveChangesAsync();
 
-       return new QuestionDto()
-       {
-           Id = question.Id,
-           Text = model.Text,
-           CommentRight = model.CommentRight,
-           CommentWrong = model.CommentWrong,
-           Score = model.Score,
-           Answers = model.Answers,
-           QuestionsGroups = model.QuestionsGroups
-       };
-
+        return TransformToDto(question);
     }
     
     

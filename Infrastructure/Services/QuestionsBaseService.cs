@@ -2,6 +2,7 @@ using Application.Dtos;
 using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Infrastructure.Services;
 
@@ -19,17 +20,25 @@ public class QuestionsBaseService : IQuestionsBaseService
     {
         var questionsBase = new QuestionsBase
         {
-            SubjectId = dto.SubjectId
+            SubjectId = dto.SubjectId,
+            Tests = dto.Tests?.Select(x => new Test()
+            {
+                Id = x.Id,
+                QuestionsBaseId = x.QuestionsBaseId
+            }).ToList(),
+            QuestionsGroups = dto.QuestionsGroups?.Select(x => new QuestionsGroup()
+            {
+                Id = x.Id,
+                Topic = x.Topic,
+                QuestionsId = x.QuestionsId,
+                QuestionsBaseId = x.QuestionsBaseId
+            }).ToList()
         };
 
         await _context.QuestionsBases.AddAsync(questionsBase);
         await _context.SaveChangesAsync();
-        
-        return new QuestionsBaseDto()
-        {
-            Id = questionsBase.Id,
-            SubjectId = questionsBase.SubjectId
-        };
+
+        return TransformToDto(questionsBase);
     }
     
     public async Task<QuestionsBaseDto> GetByIdAsync(int id)
@@ -39,22 +48,14 @@ public class QuestionsBaseService : IQuestionsBaseService
         if (questionsBase == null)
             throw new NullReferenceException("Сущность не найдена");
 
-        return new QuestionsBaseDto
-        {
-            Id = questionsBase.Id,
-            SubjectId = questionsBase.SubjectId
-        };
+        return TransformToDto(questionsBase);
     }
     
     // Read
     public async Task<ICollection<QuestionsBaseDto>> GetAllAsync()
     {
         return await _context.QuestionsBases
-            .Select(questionsBase => new QuestionsBaseDto
-            {
-                Id = questionsBase.Id,
-                SubjectId = questionsBase.SubjectId
-            })
+            .Select(questionsBase => TransformToDto(questionsBase))
             .ToListAsync();
     }
     
@@ -70,12 +71,8 @@ public class QuestionsBaseService : IQuestionsBaseService
 
         _context.QuestionsBases.Update(questionsBase);
         await _context.SaveChangesAsync();
-        
-        return new QuestionsBaseDto
-        {
-            Id = questionsBase.Id,
-            SubjectId = questionsBase.SubjectId
-        };
+
+        return TransformToDto(questionsBase);
     }
     
     // Delete
@@ -88,5 +85,25 @@ public class QuestionsBaseService : IQuestionsBaseService
 
         _context.QuestionsBases.Remove(questionsBase);
         await _context.SaveChangesAsync();
+    }
+
+    private QuestionsBaseDto TransformToDto(QuestionsBase questionsBase)
+    {
+        return new QuestionsBaseDto()
+        {
+            SubjectId = questionsBase.SubjectId,
+            Tests = questionsBase.Tests?.Select(x => new TestDto()
+            {
+                Id = x.Id,
+                QuestionsBaseId = x.QuestionsBaseId
+            }).ToList(),
+            QuestionsGroups = questionsBase.QuestionsGroups?.Select(x => new QuestionsGroupDto()
+            {
+                Id = x.Id,
+                Topic = x.Topic,
+                QuestionsId = x.QuestionsId,
+                QuestionsBaseId = x.QuestionsBaseId
+            }).ToList()
+        };
     }
 }
