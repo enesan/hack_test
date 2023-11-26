@@ -1,3 +1,4 @@
+using System.Runtime.Intrinsics.X86;
 using Application.Dtos;
 using Application.Interfaces;
 using Domain.Entities;
@@ -19,18 +20,22 @@ public class GroupService : IGroupService
     {
         var group = new Group
         {
-            Number = model.Number
+            Number = model.Number,
+            Students = model.Students?.Select(x => new Student()
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                MiddleName = x.MiddleName,
+                LastName = x.LastName,
+                GroupId = x.GroupId,
+                UniversityId = x.UniversityId
+            }).ToList()
         };
 
         await _context.Groups.AddAsync(group);
         await _context.SaveChangesAsync();
 
-       return new GroupDto
-       {
-           Id = group.Id,
-           Number = group.Number
-       };
-
+        return TransformToDto(group);
     }
     public async Task<GroupDto> GetByIdAsync(int id)
     {
@@ -39,22 +44,14 @@ public class GroupService : IGroupService
         if (group == null)
             throw new NullReferenceException("Сущность не найдена");
 
-        return new GroupDto
-        {
-            Id = group.Id,
-            Number = group.Number
-        };
+        return TransformToDto(group);
     }
     
     // Read
     public async Task<ICollection<GroupDto>> GetAllAsync()
     {
         return await _context.Groups
-            .Select(group => new GroupDto
-            {
-                Id = group.Id,
-                Number = group.Number
-            })
+            .Select(group => TransformToDto(group))
             .ToListAsync();
     }
     
@@ -70,12 +67,8 @@ public class GroupService : IGroupService
         
         _context.Groups.Update(group);
         await _context.SaveChangesAsync();
-        
-        return new GroupDto
-        {
-            Id = group.Id,
-            Number = group.Number
-        };
+
+        return TransformToDto(group);
     }
     
     // Delete
@@ -88,5 +81,23 @@ public class GroupService : IGroupService
 
         _context.Groups.Remove(group);
         await _context.SaveChangesAsync();
+    }
+
+    private GroupDto TransformToDto(Group group)
+    {
+        return new GroupDto()
+        {
+            Id = group.Id,
+            Number = group.Number,
+            Students = group.Students?.Select(x => new StudentDto()
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                MiddleName = x.MiddleName,
+                LastName = x.LastName,
+                GroupId = x.GroupId,
+                UniversityId = x.UniversityId
+            }).ToList()
+        };
     }
 }
