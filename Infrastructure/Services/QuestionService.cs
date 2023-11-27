@@ -1,6 +1,7 @@
 using Application.Dtos;
 using Application.Interfaces;
 using Domain.Entities;
+using HackTest.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services;
@@ -22,22 +23,31 @@ public class QuestionService : IQuestionService
             Text = model.Text,
             CommentRight = model.CommentRight,
             CommentWrong = model.CommentWrong,
-            Score = model.Score
+            Score = model.Score,
+            Answers = model.Answers?.Select(x => new Answer()
+            {
+                Id = x.Id,
+                Text = x.Text,
+                IsRight = x.IsRight,
+                QuestionId = x.QuestionId
+            }).ToList(),
+            QuestionsGroups = model.QuestionsGroups?.Select(x => new QuestionsGroup()
+            {
+              Id  = x.Id,
+              Topic = x.Topic,
+              QuestionsId = x.QuestionsId,
+              QuestionsBaseId = x.QuestionsBaseId
+            }).ToList()
         };
 
         await _context.Questions.AddAsync(question);
         await _context.SaveChangesAsync();
-
-       return new QuestionDto()
-       {
-           Id = question.Id,
-           Text = question.Text,
-           CommentRight = question.CommentRight,
-           CommentWrong = question.CommentWrong,
-           Score = question.Score
-       };
+        
+        return TransformToDto(question);
 
     }
+    
+    
     public async Task<QuestionDto> GetByIdAsync(int id)
     {
         var question = await _context.Questions.FindAsync(id);
@@ -45,30 +55,18 @@ public class QuestionService : IQuestionService
         if (question == null)
             throw new NullReferenceException("Сущность не найдена");
 
-        return new QuestionDto()
-        {
-            Id = question.Id,
-            Text = question.Text,
-            CommentRight = question.CommentRight,
-            CommentWrong = question.CommentWrong,
-            Score = question.Score
-        };
+        return TransformToDto(question);
     }
+    
     
     // Read
     public async Task<ICollection<QuestionDto>> GetAllAsync()
     {
-        return await _context.Questions
-            .Select(question => new QuestionDto()
-            {
-                Id = question.Id,
-                Text = question.Text,
-                CommentRight = question.CommentRight,
-                CommentWrong = question.CommentWrong,
-                Score = question.Score
-            })
+        return await _context.Questions.Include(x => x.Answers)
+            .Select(question => TransformToDto(question))
             .ToListAsync();
     }
+    
     
     // Update
     public async Task<QuestionDto> UpdateAsync(QuestionDto dto)
@@ -84,16 +82,10 @@ public class QuestionService : IQuestionService
         
         _context.Questions.Update(question);
         await _context.SaveChangesAsync();
-        
-        return new QuestionDto()
-        {
-            Id = question.Id,
-            Text = question.Text,
-            CommentRight = question.CommentRight,
-            CommentWrong = question.CommentWrong,
-            Score = question.Score
-        };
+
+        return TransformToDto(question);
     }
+    
     
     // Delete
     public async Task DeleteAsync(int id)
@@ -105,5 +97,32 @@ public class QuestionService : IQuestionService
 
         _context.Questions.Remove(question);
         await _context.SaveChangesAsync();
+    }
+    
+    private static QuestionDto TransformToDto(Question question)
+
+    {
+        return new QuestionDto()
+        {
+            Id = question.Id,
+            Text = question.Text,
+            CommentRight = question.CommentRight,
+            CommentWrong = question.CommentWrong,
+            Score = question.Score,
+            Answers = question.Answers!.Select(x => new AnswerDto()
+            {
+                Id = x.Id,
+                Text = x.Text,
+                IsRight = x.IsRight,
+                QuestionId = x.QuestionId
+            }).ToList(),
+            QuestionsGroups = question.QuestionsGroups!.Select(x => new QuestionsGroupDto()
+            {
+                Id  = x.Id,
+                Topic = x.Topic,
+                QuestionsId = x.QuestionsId,
+                QuestionsBaseId = x.QuestionsBaseId
+            }).ToList()
+        };
     }
 }

@@ -10,7 +10,13 @@ public class QuestionDto: BaseDto
     public string CommentWrong { get; set; }
     public double Score { get; set; }
 
-    public List<QuestionsGroupDto>? QuestionsGroups { get; set; }
-    public List<AnswerDto>? Answers { get; set; }
+    public IEnumerable<QuestionsGroupDto>? QuestionsGroups { get; set; }
+    public IEnumerable<AnswerDto>? Answers { get; set; }
+
+    public QuestionDto()
+    {
+        QuestionsGroups = new List<QuestionsGroupDto>();
+        Answers = new List<AnswerDto>();
+    }
 
 }

@@ -28,13 +28,7 @@ public class AnswerService : IAnswerService
         await _context.Answers.AddAsync(answer);
         await _context.SaveChangesAsync();
         
-        return new AnswerDto
-        {
-            Id = answer.Id,
-            Text = answer.Text,
-            IsRight = answer.IsRight,
-            QuestionId = answer.QuestionId
-        };
+        return TransformToDto(answer);
     }
 
     public async Task<AnswerDto> GetByIdAsync(int id)
@@ -44,26 +38,14 @@ public class AnswerService : IAnswerService
         if (answer == null)
             throw new NullReferenceException("Сущность не найдена");
 
-        return new AnswerDto
-        {
-            Id = answer.Id,
-            Text = answer.Text,
-            IsRight = answer.IsRight,
-            QuestionId = answer.QuestionId
-        };
+        return TransformToDto(answer);
     }
 
     // Read
     public async Task<ICollection<AnswerDto>> GetAllAsync()
     {
         return await _context.Answers
-            .Select(answer => new AnswerDto
-            {
-                Id = answer.Id,
-                Text = answer.Text,
-                IsRight = answer.IsRight,
-                QuestionId = answer.QuestionId
-            })
+            .Select(answer => TransformToDto(answer))
             .ToListAsync();
     }
 
@@ -81,14 +63,8 @@ public class AnswerService : IAnswerService
 
         _context.Answers.Update(answer);
         await _context.SaveChangesAsync();
-        
-        return new AnswerDto
-        {
-            Id = answer.Id,
-            Text = answer.Text,
-            IsRight = answer.IsRight,
-            QuestionId = answer.QuestionId
-        };
+
+        return TransformToDto(answer);
     }
 
     // Delete
@@ -102,4 +78,16 @@ public class AnswerService : IAnswerService
         _context.Answers.Remove(answer);
         await _context.SaveChangesAsync();
     }
+
+    private static  AnswerDto TransformToDto(Answer answer)
+    {
+        return new AnswerDto
+        {
+            Id = answer.Id,
+            Text = answer.Text,
+            IsRight = answer.IsRight,
+            QuestionId = answer.QuestionId
+        };
+    }
+    
 }

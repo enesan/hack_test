@@ -25,11 +25,7 @@ public class TestService : ITestService
         await _context.Tests.AddAsync(test);
         await _context.SaveChangesAsync();
         
-        return new TestDto
-        {
-            Id = test.Id,
-            QuestionsBaseId = test.QuestionsBaseId
-        };
+        return TransformToDto(test);
     }
     
     public async Task<TestDto> GetByIdAsync(int id)
@@ -39,22 +35,14 @@ public class TestService : ITestService
         if (test == null)
             throw new NullReferenceException("Сущность не найдена");
 
-        return new TestDto
-        {
-            Id = test.Id,
-            QuestionsBaseId = test.QuestionsBaseId
-        };
+        return TransformToDto(test);
     }
     
     // Read
     public async Task<ICollection<TestDto>> GetAllAsync()
     {
         return await _context.Tests
-            .Select(test => new TestDto
-            {
-                Id = test.Id,
-                QuestionsBaseId = test.QuestionsBaseId
-            })
+            .Select(test => TransformToDto(test))
             .ToListAsync();
     }
     
@@ -70,12 +58,8 @@ public class TestService : ITestService
 
         _context.Tests.Update(test);
         await _context.SaveChangesAsync();
-        
-        return new TestDto
-        {
-            Id = test.Id,
-            QuestionsBaseId = test.QuestionsBaseId
-        };
+
+        return TransformToDto(test);
     }
     
     // Delete
@@ -88,5 +72,14 @@ public class TestService : ITestService
 
         _context.Tests.Remove(test);
         await _context.SaveChangesAsync();
+    }
+    
+    private static TestDto TransformToDto(Test test)
+    {
+        return new TestDto()
+        {
+            Id = test.Id,
+            QuestionsBaseId = test.QuestionsBaseId
+        };
     }
 }

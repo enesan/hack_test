@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Dtos;
+using Application.Interfaces;
 using HackTest.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,29 +7,29 @@ namespace Ancient.Controllers;
 
 [ApiController]
 [Route("/api/[controller]")]
-public class AnswerController : ControllerBase
+public class TestController : ControllerBase
 {
-    private readonly IAnswerService _service;
+    private readonly ITestService _service;
 
-    public AnswerController(IAnswerService service)
+    public TestController(ITestService service)
     {
         _service = service;
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<AnswerDto>> Get(int id)
+    public async Task<ActionResult<TestDto>> Get(int id)
     {
         return new JsonResult(await _service.GetByIdAsync(id));
     }
 
     [HttpGet]
-    public async Task<ActionResult<ICollection<AnswerDto>>> GetAll()
+    public async Task<ActionResult<ICollection<TestDto>>> GetAll()
     {
         return new JsonResult(await _service.GetAllAsync());
     }
 
     [HttpPost]
-    public async Task<ActionResult<AnswerDto>> Add([FromBody] AnswerDto? dto)
+    public async Task<ActionResult<TestDto>> Add([FromBody] TestDto? dto)
     {
         if (dto == null)
             return BadRequest("Dto not found");
@@ -39,7 +40,7 @@ public class AnswerController : ControllerBase
     }
 
     [HttpPatch("{id}")]
-    public async Task<ActionResult<AnswerDto>> Update(int id, [FromBody] AnswerDto? dto)
+    public async Task<ActionResult<TestDto>> Update(int id, [FromBody] TestDto? dto)
     {
         if (dto == null)
             return BadRequest("Dto not found");

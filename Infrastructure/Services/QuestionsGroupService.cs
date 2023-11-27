@@ -27,13 +27,7 @@ public class QuestionsGroupService : IQuestionsGroupService
         await _context.QuestionsGroups.AddAsync(questionsGroup);
         await _context.SaveChangesAsync();
         
-        return new QuestionsGroupDto
-        {
-            Id = questionsGroup.Id,
-            Topic = questionsGroup.Topic,
-            QuestionsId = dto.QuestionsId,
-            QuestionsBaseId = dto.QuestionsBaseId
-        };
+        return TransformToDto(questionsGroup);
     }
     
     public async Task<QuestionsGroupDto> GetByIdAsync(int id)
@@ -43,26 +37,14 @@ public class QuestionsGroupService : IQuestionsGroupService
         if (questionsGroup == null)
             throw new NullReferenceException("Сущность не найдена");
 
-        return new QuestionsGroupDto
-        {
-            Id = questionsGroup.Id,
-            Topic = questionsGroup.Topic,
-            QuestionsId = questionsGroup.QuestionsId,
-            QuestionsBaseId = questionsGroup.QuestionsBaseId
-        };
+        return TransformToDto(questionsGroup);
     }
     
     // Read
     public async Task<ICollection<QuestionsGroupDto>> GetAllAsync()
     {
         return await _context.QuestionsGroups
-            .Select(questionsGroup => new QuestionsGroupDto()
-            {
-                Id = questionsGroup.Id,
-                Topic = questionsGroup.Topic,
-                QuestionsId = questionsGroup.QuestionsId,
-                QuestionsBaseId = questionsGroup.QuestionsBaseId
-            })
+            .Select(questionsGroup => TransformToDto(questionsGroup))
             .ToListAsync();
     }
     
@@ -78,14 +60,8 @@ public class QuestionsGroupService : IQuestionsGroupService
 
         _context.QuestionsGroups.Update(questionsGroup);
         await _context.SaveChangesAsync();
-        
-        return new QuestionsGroupDto()
-        {
-            Id = questionsGroup.Id,
-            Topic = questionsGroup.Topic,
-            QuestionsId = questionsGroup.QuestionsId,
-            QuestionsBaseId = questionsGroup.QuestionsBaseId
-        };
+
+        return TransformToDto(questionsGroup);
     }
     
     // Delete
@@ -98,5 +74,16 @@ public class QuestionsGroupService : IQuestionsGroupService
 
         _context.QuestionsGroups.Remove(questionsGroup);
         await _context.SaveChangesAsync();
+    }
+
+    private static QuestionsGroupDto TransformToDto(QuestionsGroup questionsGroup)
+    {
+        return new QuestionsGroupDto()
+        {
+            Id = questionsGroup.Id,
+            Topic = questionsGroup.Topic,
+            QuestionsId = questionsGroup.QuestionsId,
+            QuestionsBaseId = questionsGroup.QuestionsBaseId
+        };
     }
 }

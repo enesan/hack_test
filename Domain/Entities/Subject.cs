@@ -4,8 +4,8 @@ public class Subject: BaseEntity
 {
     public string Name { get; set; }
 
-    public List<QuestionsBase>? QuestionsBases { get; set; }
-    public List<Group>? Groups { get; set; }
+    public IEnumerable<QuestionsBase>? QuestionsBases { get; set; }
+    public IEnumerable<Group>? Groups { get; set; }
 
     public Subject()
     {

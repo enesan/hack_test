@@ -9,8 +9,8 @@ public class Question: BaseEntity
     public string CommentWrong { get; set; }
     public double Score { get; set; }
 
-    public List<QuestionsGroup>? QuestionsGroups { get; set; }
-    public List<Answer>? Answers { get; set; }
+    public IEnumerable<QuestionsGroup>? QuestionsGroups { get; set; }
+    public IEnumerable<Answer>? Answers { get; set; }
 
     public Question()
     {

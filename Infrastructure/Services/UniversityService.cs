@@ -22,16 +22,21 @@ public class UniversityService : IUniversityService
         var university = new University
         {
             Name = dto.Name,
+            Students = dto.Students?.Select(x => new Student()
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                MiddleName = x.MiddleName,
+                LastName = x.LastName,
+                GroupId = x.GroupId,
+                UniversityId = x.UniversityId
+            }).ToList()
         };
 
         await _context.Universities.AddAsync(university);
         await _context.SaveChangesAsync();
         
-        return new UniversityDto
-        {
-            Id = university.Id,
-            Name = university.Name
-        };
+        return TransformToDto(university);
     }
     
     public async Task<UniversityDto> GetByIdAsync(int id)
@@ -41,22 +46,14 @@ public class UniversityService : IUniversityService
         if (university == null)
             throw new NullReferenceException("Сущность не найдена");
 
-        return new UniversityDto
-        {
-            Id = university.Id,
-            Name = university.Name
-        };
+        return TransformToDto(university);
     }
     
     // Read
     public async Task<ICollection<UniversityDto>> GetAllAsync()
     {
         return await _context.Universities
-            .Select(university => new UniversityDto
-            {
-                Id = university.Id,
-                Name = university.Name
-            })
+            .Select(university => TransformToDto(university))
             .ToListAsync();
     }
     
@@ -72,12 +69,8 @@ public class UniversityService : IUniversityService
 
         _context.Universities.Update(university);
         await _context.SaveChangesAsync();
-        
-        return new UniversityDto
-        {
-            Id = university.Id,
-            Name = university.Name
-        };
+
+        return TransformToDto(university);
     }
     
     // Delete
@@ -90,5 +83,23 @@ public class UniversityService : IUniversityService
 
         _context.Universities.Remove(university);
         await _context.SaveChangesAsync();
+    }
+
+    private static UniversityDto TransformToDto(University university)
+    {
+        return new UniversityDto()
+        {
+            Id = university.Id,
+            Name = university.Name,
+            Students = university.Students?.Select(x => new StudentDto()
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                MiddleName = x.MiddleName,
+                LastName = x.LastName,
+                GroupId = x.GroupId,
+                UniversityId = x.UniversityId
+            }).ToList()
+        };
     }
 }

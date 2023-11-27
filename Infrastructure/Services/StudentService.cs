@@ -30,15 +30,7 @@ public class StudentService : IStudentService
         await _context.Students.AddAsync(student);
         await _context.SaveChangesAsync();
 
-       return new StudentDto
-       {
-           Id = student.Id,
-           FirstName = student.FirstName,
-           MiddleName = student.MiddleName,
-           LastName = student.LastName,
-           GroupId = student.GroupId,
-           UniversityId = student.UniversityId
-       };
+        return TransformToDto(student);
 
     }
     public async Task<StudentDto> GetByIdAsync(int id)
@@ -48,30 +40,14 @@ public class StudentService : IStudentService
         if (student == null)
             throw new NullReferenceException("Сущность не найдена");
 
-        return new StudentDto
-        {
-            Id = student.Id,
-            FirstName = student.FirstName,
-            MiddleName = student.MiddleName,
-            LastName = student.LastName,
-            GroupId = student.GroupId,
-            UniversityId = student.UniversityId
-        };
+        return TransformToDto(student);
     }
     
     // Read
     public async Task<ICollection<StudentDto>> GetAllAsync()
     {
         return await _context.Students
-            .Select(student => new StudentDto
-            {
-                Id = student.Id,
-                FirstName = student.FirstName,
-                MiddleName = student.MiddleName,
-                LastName = student.LastName,
-                GroupId = student.GroupId,
-                UniversityId = student.UniversityId
-            })
+            .Select(student => TransformToDto(student))
             .ToListAsync();
     }
     
@@ -91,16 +67,8 @@ public class StudentService : IStudentService
         
         _context.Students.Update(student);
         await _context.SaveChangesAsync();
-        
-        return new StudentDto
-        {
-            Id = student.Id,
-            FirstName = student.FirstName,
-            MiddleName = student.MiddleName,
-            LastName = student.LastName,
-            GroupId = student.GroupId,
-            UniversityId = student.UniversityId
-        };
+
+        return TransformToDto(student);
     }
     
     // Delete
@@ -113,5 +81,18 @@ public class StudentService : IStudentService
 
         _context.Students.Remove(student);
         await _context.SaveChangesAsync();
+    }
+
+    private static StudentDto TransformToDto(Student student)
+    {
+        return new StudentDto()
+        {
+            Id = student.Id,
+            FirstName = student.FirstName,
+            MiddleName = student.MiddleName,
+            LastName = student.LastName,
+            GroupId = student.GroupId,
+            UniversityId = student.UniversityId
+        };
     }
 }

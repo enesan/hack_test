@@ -25,7 +25,7 @@ public class QuestionsGroupController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<ICollection<QuestionsGroupDto>>> Get()
+    public async Task<ActionResult<ICollection<QuestionsGroupDto>>> GetAll()
     {
         return new JsonResult(await _service.GetAllAsync());
     }

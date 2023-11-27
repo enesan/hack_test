@@ -20,16 +20,17 @@ public class SubjectService : ISubjectService
         var subject = new Subject
         {
             Name = dto.Name,
+            QuestionsBases = dto.QuestionsBases?.Select(x => new QuestionsBase()
+            {
+                Id = x.Id,
+                SubjectId = x.SubjectId
+            }).ToList()
         };
 
         await _context.Subjects.AddAsync(subject);
         await _context.SaveChangesAsync();
         
-        return new SubjectDto
-        {
-            Id = subject.Id,
-            Name = subject.Name
-        };
+        return TransformToDto(subject);
     }
     
     public async Task<SubjectDto> GetByIdAsync(int id)
@@ -39,22 +40,14 @@ public class SubjectService : ISubjectService
         if (subject == null)
             throw new NullReferenceException("Сущность не найдена");
 
-        return new SubjectDto
-        {
-            Id = subject.Id,
-            Name = subject.Name
-        };
+        return TransformToDto(subject);
     }
     
     // Read
     public async Task<ICollection<SubjectDto>> GetAllAsync()
     {
         return await _context.Subjects
-            .Select(subject => new SubjectDto
-            {
-                Id = subject.Id,
-                Name = subject.Name
-            })
+            .Select(subject => TransformToDto(subject))
             .ToListAsync();
     }
     
@@ -70,12 +63,8 @@ public class SubjectService : ISubjectService
 
         _context.Subjects.Update(subject);
         await _context.SaveChangesAsync();
-        
-        return new SubjectDto()
-        {
-            Id = subject.Id,
-            Name = subject.Name
-        };
+
+        return TransformToDto(subject);
     }
     
     // Delete
@@ -88,5 +77,19 @@ public class SubjectService : ISubjectService
 
         _context.Subjects.Remove(subject);
         await _context.SaveChangesAsync();
+    }
+
+    private static SubjectDto TransformToDto(Subject subject)
+    {
+        return new SubjectDto()
+        {
+            Id = subject.Id,
+            Name = subject.Name,
+            QuestionsBases = subject.QuestionsBases?.Select(x => new QuestionsBaseDto()
+            {
+                Id = x.Id,
+                SubjectId = x.SubjectId
+            }).ToList()
+        };
     }
 }
