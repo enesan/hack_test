@@ -74,7 +74,7 @@ public class TestService : ITestService
         await _context.SaveChangesAsync();
     }
     
-    private TestDto TransformToDto(Test test)
+    private static TestDto TransformToDto(Test test)
     {
         return new TestDto()
         {

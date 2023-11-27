@@ -87,7 +87,7 @@ public class QuestionsBaseService : IQuestionsBaseService
         await _context.SaveChangesAsync();
     }
 
-    private QuestionsBaseDto TransformToDto(QuestionsBase questionsBase)
+    private static QuestionsBaseDto TransformToDto(QuestionsBase questionsBase)
     {
         return new QuestionsBaseDto()
         {

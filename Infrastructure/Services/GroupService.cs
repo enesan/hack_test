@@ -83,7 +83,7 @@ public class GroupService : IGroupService
         await _context.SaveChangesAsync();
     }
 
-    private GroupDto TransformToDto(Group group)
+    private static GroupDto TransformToDto(Group group)
     {
         return new GroupDto()
         {

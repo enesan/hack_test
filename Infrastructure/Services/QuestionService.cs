@@ -42,8 +42,9 @@ public class QuestionService : IQuestionService
 
         await _context.Questions.AddAsync(question);
         await _context.SaveChangesAsync();
-
+        
         return TransformToDto(question);
+
     }
     
     
@@ -61,7 +62,7 @@ public class QuestionService : IQuestionService
     // Read
     public async Task<ICollection<QuestionDto>> GetAllAsync()
     {
-        return await _context.Questions
+        return await _context.Questions.Include(x => x.Answers)
             .Select(question => TransformToDto(question))
             .ToListAsync();
     }
@@ -98,8 +99,8 @@ public class QuestionService : IQuestionService
         await _context.SaveChangesAsync();
     }
     
+    private static QuestionDto TransformToDto(Question question)
 
-    private QuestionDto TransformToDto(Question question)
     {
         return new QuestionDto()
         {

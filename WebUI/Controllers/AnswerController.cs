@@ -22,7 +22,7 @@ public class AnswerController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<ICollection<AnswerDto>>> Get()
+    public async Task<ActionResult<ICollection<AnswerDto>>> GetAll()
     {
         return new JsonResult(await _service.GetAllAsync());
     }

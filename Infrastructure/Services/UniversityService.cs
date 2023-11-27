@@ -85,7 +85,7 @@ public class UniversityService : IUniversityService
         await _context.SaveChangesAsync();
     }
 
-    private UniversityDto TransformToDto(University university)
+    private static UniversityDto TransformToDto(University university)
     {
         return new UniversityDto()
         {

@@ -79,7 +79,7 @@ public class SubjectService : ISubjectService
         await _context.SaveChangesAsync();
     }
 
-    private SubjectDto TransformToDto(Subject subject)
+    private static SubjectDto TransformToDto(Subject subject)
     {
         return new SubjectDto()
         {

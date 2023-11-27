@@ -83,7 +83,7 @@ public class StudentService : IStudentService
         await _context.SaveChangesAsync();
     }
 
-    private StudentDto TransformToDto(Student student)
+    private static StudentDto TransformToDto(Student student)
     {
         return new StudentDto()
         {

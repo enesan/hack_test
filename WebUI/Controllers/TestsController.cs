@@ -23,7 +23,7 @@ public class TestController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<ICollection<TestDto>>> Get()
+    public async Task<ActionResult<ICollection<TestDto>>> GetAll()
     {
         return new JsonResult(await _service.GetAllAsync());
     }

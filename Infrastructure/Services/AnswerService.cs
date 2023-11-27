@@ -79,7 +79,7 @@ public class AnswerService : IAnswerService
         await _context.SaveChangesAsync();
     }
 
-    private AnswerDto TransformToDto(Answer answer)
+    private static  AnswerDto TransformToDto(Answer answer)
     {
         return new AnswerDto
         {

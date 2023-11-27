@@ -76,7 +76,7 @@ public class QuestionsGroupService : IQuestionsGroupService
         await _context.SaveChangesAsync();
     }
 
-    private QuestionsGroupDto TransformToDto(QuestionsGroup questionsGroup)
+    private static QuestionsGroupDto TransformToDto(QuestionsGroup questionsGroup)
     {
         return new QuestionsGroupDto()
         {

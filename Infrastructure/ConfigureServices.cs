@@ -21,6 +21,14 @@ public static class ConfigureServices
         services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>()!);
 
         services.AddTransient<IAnswerService, AnswerService>();
+        services.AddTransient<IGroupService, GroupService>();
+        services.AddTransient<IQuestionService, QuestionService>();
+        services.AddTransient<IQuestionsBaseService, QuestionsBaseService>();
+        services.AddTransient<IQuestionsGroupService, QuestionsGroupService>();
+        services.AddTransient<IStudentService, StudentService>();
+        services.AddTransient<ISubjectService, SubjectService>();
+        services.AddTransient<ITestService, TestService>();
+        services.AddTransient<IUniversityService, UniversityService>();
         
         
         return services;
